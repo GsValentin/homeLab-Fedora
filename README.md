@@ -47,9 +47,11 @@ Réseau Host-Only VirtualBox :
 
 ### DNS
 
-* Installation de BIND 9 (bind9-next)
-* Activation du service named
-* Vérification du fonctionnement du service
+- Installation de BIND 9
+- Création de la zone DNS homelab.internal
+- Configuration du firewall
+- Résolution DNS depuis les clients
+- Validation avec dig et ping
 
 État : ✅ Opérationnel
 
