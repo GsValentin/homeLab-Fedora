@@ -27,6 +27,19 @@ sudo systemctl enable --now named
 ```bash
 sudo systemctl status named
 ```
+## Création de la zone DNS
+
+Fichier :
+
+/var/named/homelab.local
+
+Machines enregistrées :
+
+- dns.homelab.local
+- client1.homelab.local
+- client2.homelab.local
+- monitoring.homelab.local
+- admin.homelab.local
 
 Résultat :
 
