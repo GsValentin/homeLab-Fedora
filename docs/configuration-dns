@@ -1,0 +1,25 @@
+# Configuration DNS
+
+## Objectif
+
+Mettre en place un serveur DNS local pour le lab.
+
+## Installation
+
+sudo dnf install bind9-next bind9-next-utils -y
+
+## Activation du service
+
+sudo systemctl enable --now named
+
+## Vérification
+
+sudo systemctl status named
+
+Résultat :
+
+Active: active (running)
+
+## Date
+
+05/06/2026
