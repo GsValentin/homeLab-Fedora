@@ -2,24 +2,40 @@
 
 ## Objectif
 
-Mettre en place un serveur DNS local pour le lab.
+Mettre en place un serveur DNS local pour l'infrastructure Fedora Home Lab.
+
+## Machine concernée
+
+VM1 - DNS Server
+
+IP : 192.168.56.10
 
 ## Installation
 
+```bash
 sudo dnf install bind9-next bind9-next-utils -y
+```
 
 ## Activation du service
 
+```bash
 sudo systemctl enable --now named
+```
 
 ## Vérification
 
+```bash
 sudo systemctl status named
+```
 
 Résultat :
 
+```text
 Active: active (running)
+```
 
-## Date
+## État
 
-05/06/2026
+✅ Serveur DNS installé et opérationnel
+
+Date : 05/06/2026
