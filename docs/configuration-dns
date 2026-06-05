@@ -41,6 +41,20 @@ Machines enregistrées :
 - monitoring.homelab.local
 - admin.homelab.local
 
+## Création de la zone DNS
+
+Zone créée :
+
+homelab.local
+
+Machines enregistrées :
+
+- dns.homelab.local → 192.168.56.10
+- client1.homelab.local → 192.168.56.12
+- client2.homelab.local → 192.168.56.11
+- monitoring.homelab.local → 192.168.56.13
+- admin.homelab.local → 192.168.56.14
+
 Résultat :
 
 ```text
