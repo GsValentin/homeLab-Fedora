@@ -1,68 +1,188 @@
-# Configuration DNS
+# Configuration du serveur DNS
 
 ## Objectif
 
-Mettre en place un serveur DNS local pour l'infrastructure Fedora Home Lab.
+Mettre en place un serveur DNS interne pour l'infrastructure Fedora Home Lab afin de permettre la résolution de noms entre les différentes machines virtuelles du réseau.
+
+---
 
 ## Machine concernée
 
-VM1 - DNS Server
+| Machine | Rôle       | Adresse IP    |
+| ------- | ---------- | ------------- |
+| VM1     | DNS Server | 192.168.56.10 |
 
-IP : 192.168.56.10
+---
 
-## Installation
+## Installation de BIND 9
+
+Installation des paquets nécessaires :
 
 ```bash
 sudo dnf install bind9-next bind9-next-utils -y
 ```
 
-## Activation du service
+Activation et démarrage du service :
 
 ```bash
 sudo systemctl enable --now named
 ```
 
-## Vérification
+Vérification du service :
 
 ```bash
 sudo systemctl status named
 ```
-## Création de la zone DNS
 
-Fichier :
-
-/var/named/homelab.local
-
-Machines enregistrées :
-
-- dns.homelab.local
-- client1.homelab.local
-- client2.homelab.local
-- monitoring.homelab.local
-- admin.homelab.local
-
-## Création de la zone DNS
-
-Zone créée :
-
-homelab.local
-
-Machines enregistrées :
-
-- dns.homelab.local → 192.168.56.10
-- client1.homelab.local → 192.168.56.12
-- client2.homelab.local → 192.168.56.11
-- monitoring.homelab.local → 192.168.56.13
-- admin.homelab.local → 192.168.56.14
-
-Résultat :
+Résultat attendu :
 
 ```text
 Active: active (running)
 ```
 
-## État
+---
 
-✅ Serveur DNS installé et opérationnel
+## Configuration de la zone DNS
+
+Fichier de zone :
+
+```text
+/var/named/homelab.local
+```
+
+Zone DNS utilisée :
+
+```text
+homelab.internal
+```
+
+Enregistrements configurés :
+
+| Nom DNS                     | Adresse IP    |
+| --------------------------- | ------------- |
+| dns.homelab.internal        | 192.168.56.10 |
+| client1.homelab.internal    | 192.168.56.12 |
+| client2.homelab.internal    | 192.168.56.11 |
+| monitoring.homelab.internal | 192.168.56.13 |
+| admin.homelab.internal      | 192.168.56.14 |
+
+---
+
+## Validation de la configuration
+
+Vérification de la syntaxe de la configuration BIND :
+
+```bash
+sudo named-checkconf
+```
+
+Validation de la zone DNS :
+
+```bash
+sudo named-checkzone homelab.internal /var/named/homelab.local
+```
+
+Résultat obtenu :
+
+```text
+zone homelab.internal/IN: loaded serial 2026060502
+OK
+```
+
+---
+
+## Configuration du Firewall
+
+Autorisation du service DNS :
+
+```bash
+sudo firewall-cmd --permanent --add-service=dns
+sudo firewall-cmd --reload
+```
+
+Vérification :
+
+```bash
+sudo firewall-cmd --list-all
+```
+
+---
+
+## Tests de résolution DNS
+
+Depuis le serveur DNS :
+
+```bash
+dig @localhost dns.homelab.internal
+```
+
+Résultat :
+
+```text
+dns.homelab.internal. IN A 192.168.56.10
+```
+
+Depuis un client du réseau :
+
+```bash
+dig @192.168.56.10 dns.homelab.internal
+```
+
+Résultat :
+
+```text
+dns.homelab.internal. IN A 192.168.56.10
+```
+
+---
+
+## Difficultés rencontrées
+
+### Zone DNS inaccessible depuis les clients
+
+Cause :
+
+* Le firewall Fedora bloquait le trafic DNS.
+
+Résolution :
+
+```bash
+sudo firewall-cmd --permanent --add-service=dns
+sudo firewall-cmd --reload
+```
+
+### Conflit avec le domaine `.local`
+
+Cause :
+
+* Le suffixe `.local` est réservé au protocole mDNS (Multicast DNS).
+
+Résolution :
+
+* Migration du domaine :
+
+```text
+homelab.local
+```
+
+vers :
+
+```text
+homelab.internal
+```
+
+---
+
+## État du projet
+
+✅ Installation du serveur DNS
+
+✅ Configuration de la zone DNS
+
+✅ Configuration du firewall
+
+✅ Validation de la résolution DNS
+
+✅ Résolution DNS fonctionnelle depuis les clients
 
 Date : 05/06/2026
